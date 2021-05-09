@@ -18,7 +18,6 @@ def index():
     if 'token' in session:
         nr = CreatePlaylist()
         tracks = nr.process(session['token'])
-        print(tracks)
         return render_template('home.html',token=session['token'])
     else:
         return render_template('index.html')
@@ -35,8 +34,9 @@ def login():
     response = make_response(redirect(authorize_url + query_params))
     return response
 
-@app.route('/callback')
+@app.route('/callback') #spotify will redirect to this route. set as redirect_uri.
 def callback():
+    #check if passed state via url equals to stored state or if url passes error var
     if request.args.get('state') != session['state_key'] or request.args.get('error'):
         return render_template('index.html', error='State failed.')
 
@@ -60,5 +60,5 @@ def callback():
 
 @app.route('/logout')
 def logout():
-    [session.pop(key) for key in list(session.keys())]
+    [session.pop(key) for key in list(session.keys())] #clear session before officially logging out via spotify's link
     return redirect("https://accounts.spotify.com/logout")
