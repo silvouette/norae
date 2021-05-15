@@ -6,10 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"
     >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
     <title>norae</title>
 </head>
 <body>
+    {% if error %}
+        <script>
+            console.error('{{error}}')
+        </script>
+    {% endif %}
     <div id="content">
         <section id="div-title">
             <h1>norae</h1>
@@ -23,7 +29,7 @@
     <p id="desc">Inspired by my way of learning languages with songs. Currently trying to learn Korean, thus the name <em>norae</em>.</p>
     <footer class="flex-container">
         <p>2021 Silvia Mawarni</p>
-        <a>github</a>
+        <a href="https://github.com/silvouette/norae"><i class="fa fa-github" style="color:#fff; font-size: 1.5em;"></i> github</a>
     </footer>
 </body>
 </html>

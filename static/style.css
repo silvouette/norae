@@ -1,9 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
 
+:root {
+    --main-1: #4568DC;
+    --main-2: #B06AB3;
+  }
+
 body{
-    font-family: 'Montserrat',sans-serif;
-    color: #4568dc;
     background: #fff;
+    color: var(--main-1);
+    font-family: 'Montserrat',sans-serif;
     max-width: 100%;
 }
 h1{
@@ -11,30 +16,33 @@ h1{
     font-size: 10em;
 }
 h2{
-    color:#B06AB3;
+    color:var(--main-2);
 }
 a{
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 .btn{
-    background: #4568DC;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #B06AB3, #4568DC);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #B06AB3, #4568DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: var(--main-1);  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, var(--main-2), var(--main-1));  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, var(--main-2), var(--main-1)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     color:#fff;
     border-radius: 50px;
     font-weight: 700;
 }
 .btn:hover{
     color:#fff;
-    background: #B06AB3;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #4568DC, #B06AB3);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #4568DC, #B06AB3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: var(--main-2);  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, var(--main-1), var(--main-2));  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, var(--main-1), var(--main-2)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.btn:focus{
+    box-shadow: 0 0 2px 3px #afafaf;
 }
 footer, header{
-    background: #4568DC;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #B06AB3, #4568DC);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #B06AB3, #4568DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: var(--main-1);  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, var(--main-2), var(--main-1));  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, var(--main-2), var(--main-1)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     color: #fff;
     position: fixed;
     width: 100%;
@@ -48,9 +56,19 @@ footer, header{
 header{
     top:0;
     left:0;
+    height: 8%;
 }
 header p{
+    flex-basis: 80%;
+    font-size: xx-large;
+    font-weight: 700;
+    margin-left: 7%;
+}
+header a{
+    display: inline-block;
+    color: #fff;
     font-size: large;
+    align-self: center;
 }
 footer{
     bottom: 0;
@@ -66,16 +84,28 @@ footer>p{
 footer>a{
     padding-top: 1%;
     font-weight: 700;
+    color: #fff;
+}
+footer>a:hover{
+    color:white;
 }
 
 #content{
     display: flex;
     flex-direction: row;
 }
+
 #saved-tracks{
     position: relative;
     top: 100px;
 }
+
+#saved-tracks h2{
+    font-weight: 700;
+    color: #afafaf;
+    margin-bottom: 3%;
+}
+
 #div-title{
     margin: 7% 0 10% 10%;
     width: 50%;
@@ -96,9 +126,81 @@ footer>a{
     text-align: center; 
     color:grey;
 }
+#tracks-list li{
+    list-style: none;
+    font-size: 1.1em;
+    font-weight: 700;
+}
+#tracks-list span{
+    /* color: var(--main-2); */
+    color: #8b8b8b;
+    display: block;
+    margin-bottom: 3%;
+}
 
+#saved-tracks-content{
+    display: flex;
+    flex-direction: row;
+}
+
+#saved-tracks{
+    max-width: 50%;
+    margin: 0 auto;
+    /* color: #fff; */
+}
+
+#saved-tracks h2{
+    text-align: right;
+}
+
+#tracks-list{
+    max-height: 300px;
+    overflow:auto;
+    margin-left: 2%;
+    /*background: var(--main-1);  /* fallback for old browsers */
+    /*background: -webkit-linear-gradient(to right, var(--main-2), var(--main-1));  /* Chrome 10-25, Safari 5.1-6 */
+    /*background: linear-gradient(to right, var(--main-2), var(--main-1)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+#div-albumart{
+    margin-right: 2%;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    }
+    
+/* ::-webkit-scrollbar-track {
+border: 4px solid var(--main-1);
+border-radius: 10px;
+} */
+
+::-webkit-scrollbar-thumb {
+    background: var(--main-1);  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, var(--main-2), var(--main-1));  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, var(--main-2), var(--main-1)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    border-radius: 10px;
+    border-color: var(--main-2);
+}
+
+#btn-get{
+    width: 50%;
+    height: 40%;
+    margin: 5% 0 0 20%;
+}
+
+/* ::-webkit-scrollbar-thumb:hover {
+background: #88ba1c;  
+} */
+    
 @media (max-width: 700px){
-    body {
+    html,body {
+        position: relative;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    header, #saved-tracks{
         overflow-x: hidden;
     }
     h1{
@@ -114,11 +216,19 @@ footer>a{
         padding-top: 1%;
         margin-left: 2%;
         align-self: center;
-        flex-basis: 90%;
+        flex-basis: 77%;
         font-weight: 500;
     }
-    footer>a{
-        margin-right: 2%;
+    header{
+        max-width: 100%;
+        overflow: hidden;
+    }
+    header>p{
+        padding-top: 3%;
+        margin-left: 2%;
+        align-self: center;
+        flex-basis: 70%;
+        font-weight: 700;
     }
     #div-title{
         max-width: 100%;
@@ -131,5 +241,21 @@ footer>a{
     }
     #div-image img{
         display: none;
+    }
+    #saved-tracks{
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    #saved-tracks h2{
+        text-align: center;
+    }
+    #saved-tracks-content{
+        display: flex;
+        flex-direction: column;
+    }
+    #tracks-list{
+        height: 100%;
+        max-height: 100%;
+        width: 100%;
     }
 }

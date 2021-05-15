@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>norae</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"
+    >
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+</head>
+<body>
+    <div>
+    <header>
+        <p>norae</p>
+        <a href={{ url_for('logout') }} id="btn-logout">logout</a>
+    </header>
+    <section id='saved-tracks'>
+        <h2>Saved Tracks</h2>
+        <section id='saved-tracks-content'>
+            <div id='div-albumart'>
+                <img id='albumart'>
+            </div>
+            <div id='tracks-list'>
+            </div>
+        </section>
+        <button class="btn" id="btn-get">Get Language Playlists</button>
+    </section>
+    
+    <script>
+        var auth = 'Bearer {{token}}' //access token
+        axios.get('https://api.spotify.com/v1/me/tracks?limit=20', //saved tracks endpoint
+        {
+            headers: {//refer to spotify docs
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+        }).then((res)=>{
+            var collection = res['data']['items'] //for easier reference
+            var tracks_container = document.getElementById('tracks-list') //tracks parent div
+            //display last saved track album art (for aesthetic purpose only)
+            document.getElementById('albumart').src = collection[0]['track']['album']['images'][1]['url']
+            
+            Object.keys(collection).forEach((key)=>{
+                let track = collection[key]['track'] //for easier reference
+                let item_track = document.createElement('li') //element for track name
+                let item_artists = document.createElement('span') //element for artists
+
+                item_track.innerHTML = track['name']
+                item_artists.innerHTML = track['artists'].map(i => i.name).join(', ') //a track may have more than one artist, thus
+
+                tracks_container.appendChild(item_track)
+                tracks_container.appendChild(item_artists)
+            })
+        })
+        .catch((error)=>{
+            console.error(error)
+        })
+    </script>
+    </div>
+</body>
+</html>
