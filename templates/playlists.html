@@ -1,0 +1,81 @@
+{% extends "main_layout.html" %}
+{% block content %}
+
+<!-- 
+--------to do-----------
+-style this page
+-see if playlist with such name exist
+-if yes, get that playlist id then add tracks to that playlist
+-if not, create a new playlist, get that new playlist id, add tracks to playlist
+-add feedback if playlist added, catch error
+-add link to go back to spotify
+
+repeated functions: 
+-get playlist id
+-add tracks to playlist
+-->
+<!-- start here -->
+    <div class="container">
+        <section id="playlists">
+        {% for group in grouped_tracks if group['lang']!='none' %}
+            <div class="item-playlist">
+            <h2 class="lang">{{group['lang']}}</h2>
+            <button class="btn create" onclick="add_playlist(this.id)">Create Playlist</button>
+            {% for track in group['tracks'] %}
+                <li>{{track['track']}}</li>            
+                <p>{{', '.join(track['artist'])}}</p>
+            {% endfor %}
+            </div>
+        {% endfor %}
+        </section>
+
+        <section id="playlist-none">
+        {% for group in grouped_tracks if group['lang']=='none' %}
+            <p>We couldn't find lyrics to these tracks. Could they be instrumentals?</p>
+            {% for track in group['tracks'] %}
+                <span>{{track['track']}} by {{', '.join(track['artist'])}}. </span>
+            {% endfor %}
+        {% endfor %}
+        </section>
+    </div>
+    <script>        
+
+        (function(){
+            a = document.getElementsByClassName('create')
+            b = document.getElementsByClassName('lang')
+            Array.from(a).forEach((x,i) => {        //add lang as buttons' id for easier access when adding tracks to playlist later
+                console.log(Array.from(b)[i].outerText)
+                x.id = Array.from(b)[i].outerText
+            })
+            var auth = 'Bearer {{token}}' //access token
+            playlists = get_playlists(auth) //get existing playlist, later it'll be used to check if a playlist already exist
+        })()
+        
+        function add_playlist(lang){
+            var auth = 'Bearer {{token}}'
+            const data = { 
+                    "name": lang,
+                    "description": "New playlist description",
+                    "public": false }
+
+            fetch('https://api.spotify.com/v1/users/{{u_id}}/playlists', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            },
+            body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+            console.log('Success:', data);
+            })
+            .catch((error) => {
+            console.error('Error:', error);
+            });
+        }
+
+    </script>
+
+{% endblock %}

@@ -1,12 +1,12 @@
-import random, string, json, requests, logging, base64, time
-from secrets import redirect_uri, spotify_user_id, spotify_secret
+import random, string, json, requests, logging, time
+from secrets import id_secret_64
 
 def generateRandomString(N):
     return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
 
 def get_tokens(code):
-    id_secret = spotify_user_id+':'+spotify_secret
-    id_secret_64 = str(base64.b64encode(id_secret.encode('utf-8')))[1:].strip('\'')
+    redirect_uri = 'http://127.0.0.1:5000/callback'
+    scope = 'user-read-private user-library-read playlist-modify-public'
     authorization = 'Basic {}'.format(id_secret_64)
     token_url = 'https://accounts.spotify.com/api/token'
     
@@ -16,7 +16,7 @@ def get_tokens(code):
     }
     body = {'code':code, 'redirect_uri':redirect_uri, 'grant_type': 'authorization_code'}
     post_response = requests.post(token_url, headers=headers, data=body)
-    print(post_response.json())
+
     if post_response.status_code == 200:
         res_json = post_response.json()
         print(res_json)
@@ -25,26 +25,26 @@ def get_tokens(code):
         logging.error('getToken:' + str(post_response.status_code))
         return None
 
-# def getUserInformation(session):
-#     url = 'https://api.spotify.com/v1/me'
-#     payload = makeGetRequest(session,url)
+def getUserInformation(session):
+    url = 'https://api.spotify.com/v1/me'
+    payload = makeGetRequest(session,url)
 
-#     if payload==None:
-#         return None
+    if payload==None:
+        return None
     
-#     return payload
+    return payload
 
-# def makeGetRequest(session,url,params={}):
-#     headers = {'Authorization':'Bearer {}'.format(session['token'])}
-#     response = requests.get(url, headers=headers, params=params)
+def makeGetRequest(session,url,params={}):
+    headers = {'Authorization':'Bearer {}'.format(session['token'])}
+    response = requests.get(url, headers=headers, params=params)
 
-#     if response.status_code == 200:
-#         return response.json()
-#     elif response.status_code == 401 and checkTokenStatus(session) != None:
-#         return makeGetRequest(session, url, params)
-#     else:
-#         logging.error('makeGetRequest:' + str(response.status_code))
-#         return None
+    if response.status_code == 200:
+        return response.json()
+    elif response.status_code == 401 and checkTokenStatus(session) != None:
+        return makeGetRequest(session, url, params)
+    else:
+        logging.error('makeGetRequest:' + str(response.status_code))
+        return None
 
 def checkTokenStatus(session):
     if time.time() > session['token_expiration']:
@@ -60,8 +60,6 @@ def checkTokenStatus(session):
 
 def refreshToken(refresh_token):
     token_url = 'https://accounts.spotify.com/api/token'
-    id_secret = spotify_user_id+':'+spotify_secret
-    id_secret_64 = str(base64.b64encode(id_secret.encode('utf-8')))[1:].strip('\'')
     authorization = 'Basic {}'.format(id_secret_64) 
 
     headers = {

@@ -1,21 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>norae</title>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"
-    >
-    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-</head>
-<body>
-    <div>
-    <header>
-        <p>norae</p>
-        <a href={{ url_for('logout') }} id="btn-logout">logout</a>
-    </header>
+{% extends "main_layout.html" %}
+{% block content %}
+<!-- start here -->
     <section id='saved-tracks'>
         <h2>Saved Tracks</h2>
         <section id='saved-tracks-content'>
@@ -25,7 +10,7 @@
             <div id='tracks-list'>
             </div>
         </section>
-        <button class="btn" id="btn-get">Get Language Playlists</button>
+        <a class="btn" id="btn-get" href={{ url_for('playlists') }}>Get Language Playlists</a>
     </section>
     
     <script>
@@ -59,6 +44,5 @@
             console.error(error)
         })
     </script>
-    </div>
-</body>
-</html>
+<!-- end -->
+{% endblock %}
