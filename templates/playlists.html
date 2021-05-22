@@ -1,19 +1,6 @@
 {% extends "main_layout.html" %}
 {% block content %}
 
-<!-- 
---------to do-----------
--style this page
--see if playlist with such name exist
--if yes, get that playlist id then add tracks to that playlist
--if not, create a new playlist, get that new playlist id, add tracks to playlist
--add feedback if playlist added, catch error
--add link to go back to spotify
-
-repeated functions: 
--get playlist id
--add tracks to playlist
--->
 <!-- start here -->
     <div class="container">
         <section id="playlists">
@@ -39,7 +26,9 @@ repeated functions:
         </section>
     </div>
     <script>        
-
+        var app = {};
+        
+        //execute as page loads
         (function(){
             a = document.getElementsByClassName('create')
             b = document.getElementsByClassName('lang')
@@ -47,35 +36,81 @@ repeated functions:
                 console.log(Array.from(b)[i].outerText)
                 x.id = Array.from(b)[i].outerText
             })
-            var auth = 'Bearer {{token}}' //access token
-            playlists = get_playlists(auth) //get existing playlist, later it'll be used to check if a playlist already exist
+            app.auth = 'Bearer {{token}}' //access token
+            get_playlists(app.auth) //get existing playlist, later it'll be used to check if a playlist already exist
         })()
         
-        function add_playlist(lang){
-            var auth = 'Bearer {{token}}'
-            const data = { 
-                    "name": lang,
-                    "description": "New playlist description",
-                    "public": false }
-
-            fetch('https://api.spotify.com/v1/users/{{u_id}}/playlists', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': auth
-            },
-            body: JSON.stringify(data),
+        //to get playlist lists as page load (executed in function())
+        function get_playlists(auth){
+            return axios.get('https://api.spotify.com/v1/me/playlists', //my playlists endpoint
+            {
+                headers: {//refer to spotify docs
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': auth
+            }
+            }).then((res)=>{
+                data = res['data']['items']
+                var playlists = []
+                for (let item of data){
+                    playlists.push({'id':item['id'],'name':item['name']})
+                }
+                app.playlists = playlists
             })
-            .then(response => response.json())
-            .then(data => {
-            console.log('Success:', data);
+            .catch((error)=>{
+                console.error(error)
             })
-            .catch((error) => {
-            console.error('Error:', error);
-            });
         }
 
+        //check if language playlist already exists
+        function isPlaylistExist(lang){
+            return app.playlists.find(o => o.name == lang)
+        }
+
+        //creates playlist if language playlist doesnt exist
+        function new_playlist(lang){
+
+            const data = { 
+                        "name": lang,
+                        "description": "New playlist description",
+                        "public": false }
+
+                fetch('https://api.spotify.com/v1/users/{{u_id}}/playlists', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': app.auth
+                },
+                body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                console.log('Success:', data);
+                })
+                .catch((error) => {
+                console.error('Error:', error);
+                });
+
+        }
+
+        //executed on button click to process tracks and add them into respective playlists
+        function add_playlist(lang){
+            let playlist = isPlaylistExist(lang)
+
+            if(playlist){
+                console.log(playlist)
+                //check if track already exists in playlist, if yes don't add that track
+                //addtracks
+            }
+            else{
+                new_playlist(lang)
+                //append added playlist to app.playlists
+                //addtracks
+            }
+            //add feedback 'playlist added' or if error then catch error
+            //change button to 'Listen to Playlist' and directs to the playlist url
+        }
     </script>
 
 {% endblock %}
