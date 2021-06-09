@@ -1,7 +1,7 @@
 {% extends "main_layout.html" %}
 {% block content %}
 
-<!-- todo: button change, styling -->
+<!-- todo: styling -->
 
 <!-- start here -->
     <div class="container">
@@ -12,7 +12,7 @@
             <script>
                 var tracks = JSON.parse('{{grouped_tracks|tojson}}')
             </script>
-            <button class="btn create" onclick="add_playlist(this.id, tracks)">Create Playlist</button>
+            <a class="btn create" href="#" onclick="add_playlist(this.id, tracks); return false;">Create Playlist</a>
             {% for track in group['tracks'] %}
                 <li>{{track['track']}}</li>            
                 <p>{{', '.join(track['artist'])}}</p>
@@ -68,7 +68,7 @@
             data = res['data']['items']
             var playlists = []
             for (let item of data){
-                playlists.push({'id':item['id'],'name':item['name']})
+                playlists.push({'id':item['id'], 'name':item['name'], 'href':item['external_urls']['spotify']})
             }
             app.playlists = playlists
         })
@@ -123,7 +123,7 @@
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            return({'id':data['id'], 'name':data['name']})
+            return({'id':data['id'], 'name':data['name'], 'href':data['external_urls']['spotify']})
         })
         .catch((error) => {
             console.error('Error:', error); 
@@ -148,9 +148,7 @@
                 icon: 'success',
                 confirmButtonText: 'OK'
                 })
-                //change_button(playlist_url)
             }
-            console.log(res)
             return res.json()
         })
         .catch((error) => {
@@ -158,8 +156,11 @@
         });
     }
 
-    function change_button(playlist_url){
-        //change button to 'Listen to Playlist' and directs to the playlist url
+    function change_button(button_id, playlist_link){
+        let playlist_button = document.getElementById(button_id)
+        playlist_button.textContent = 'Listen Now'
+        playlist_button.href = playlist_link
+        playlist_button.removeAttribute("onclick")
     }
 
     function add_playlist(lang, grouped_tracks){ //executed on button click
@@ -180,6 +181,9 @@
                         track_uris.push(item['uri'])
                     }
                     add_tracks(playlist['id'],track_uris)
+                    .then((res)=>{
+                        change_button(lang, playlist['href'])
+                    })
                 }
                 else{
                     Swal.fire({
@@ -188,7 +192,7 @@
                         icon: 'error',
                         confirmButtonText: 'OK'
                     })
-                    // change_button(playlist_url)
+                    change_button(lang, playlist['href'])
                 }
             })
         }
@@ -200,7 +204,11 @@
                     for (let item of tracks){
                         track_uris.push(item['uri'])
                     }
+                let playlist_link = res['href']
                 add_tracks(res['id'], track_uris)
+                .then((res)=>{
+                    change_button(lang, playlist_link)
+                })
             })
         }
     }
