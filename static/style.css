@@ -21,7 +21,9 @@ h2{
 a{
     text-decoration: none !important;
 }
-
+li{
+    list-style: none;
+}
 .btn{
     background: var(--main-1);  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, var(--main-2), var(--main-1));  /* Chrome 10-25, Safari 5.1-6 */
@@ -166,15 +168,40 @@ footer>a:hover{
     margin-right: 2%;
 }
 
+.container{
+    position: relative;
+    top: 100px;
+}
+
+#playlists{
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+    background: green;
+    width: 80%;
+    
+}
+.item-playlist{
+    background:rgb(211, 189, 189);
+    align-items: center;
+    width: 30%;
+}
+
+.item-playlist li{
+    list-style: none;
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+#playlist-none{
+    width: 80%;
+    margin: 0 auto;
+}
+
 ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
     }
-    
-/* ::-webkit-scrollbar-track {
-border: 4px solid var(--main-1);
-border-radius: 10px;
-} */
 
 ::-webkit-scrollbar-thumb {
     background: var(--main-1);  /* fallback for old browsers */
@@ -189,6 +216,8 @@ border-radius: 10px;
     height: 40%;
     margin: 5% 0 0 20%;
 }
+
+
 
 /* ::-webkit-scrollbar-thumb:hover {
 background: #88ba1c;  

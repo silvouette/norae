@@ -56,6 +56,7 @@ def checkTokenStatus(session):
         else:
             logging.error('checkTokenStatus')
             return None
+            
     return 'Success'
 
 def refreshToken(refresh_token):

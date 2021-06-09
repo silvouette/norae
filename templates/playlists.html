@@ -1,7 +1,6 @@
 {% extends "main_layout.html" %}
 {% block content %}
 
-<!-- todo: reduce loopings -->
 <!-- start here -->
     <div class="container">
         <section id="playlists">
@@ -37,7 +36,6 @@
         a = document.getElementsByClassName('create')
         b = document.getElementsByClassName('lang')
         Array.from(a).forEach((x,i) => {        //add lang as buttons' id for easier access when adding tracks to playlist later
-            console.log(Array.from(b)[i].outerText)
             x.id = Array.from(b)[i].outerText
         })
         app.auth = 'Bearer {{token}}' //access token
@@ -131,8 +129,13 @@
         })
         .then(res => {
             if(res.status == '201'){
-                //display sweetalert "Success: playlist created"
-                //change_button()
+                Swal.fire({
+                title: 'Success!',
+                text: 'Playlist created',
+                icon: 'success',
+                confirmButtonText: 'OK'
+                })
+                //change_button(playlist_url)
             }
             console.log(res)
             return res.json()
@@ -142,8 +145,7 @@
         });
     }
 
-    function change_button(){
-        //add feedback 'playlist added' or if error then catch error
+    function change_button(playlist_url){
         //change button to 'Listen to Playlist' and directs to the playlist url
     }
 
@@ -165,8 +167,13 @@
                     add_tracks(playlist['id'],track_uris)
                 }
                 else{
-                    // display sweetalert "playlist with such name and items already exists"
-                    // change_button()
+                    Swal.fire({
+                        title: 'Oops...',
+                        text: 'Playlist with such name and items already exists.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                    // change_button(playlist_url)
                 }
             })
         }
@@ -174,7 +181,11 @@
             new_playlist(lang)
             .then((res)=>{
                 app.playlists.push(res) //append to playlists list to avoid duplicates
-                add_tracks()
+                let track_uris = []
+                    for (let item of tracks){
+                        track_uris.push(item['uri'])
+                    }
+                add_tracks(res['id'], track_uris)
             })
         }
     }

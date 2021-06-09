@@ -1,24 +1,28 @@
 from process import CreatePlaylist
-import requests
-import time, logging
+from helpers import refreshToken
+import time
 from flask import Flask, render_template, make_response, redirect, request, session, url_for
-from helpers import generateRandomString, get_tokens
+from helpers import generateRandomString, get_tokens, checkTokenStatus, getUserInformation
 from urllib.parse import urlencode
-from secrets import spotify_user_id, redirect_uri, scope, secret_key
+from secrets import spotify_user_id, secret_key
 
 app = Flask(__name__)
 app.secret_key = secret_key
 
-#todo
-#display home before running function
-#handle timeout
-
 @app.route('/')
 def index():
-    if 'token' in session:
+    #direct to home only if session exists and not expired, else direct to login.
+    if 'token' in session and checkTokenStatus(session)=='Success':
+        return render_template('home.html',token=session['token'])
+    else:
+        return render_template('index.html')
+
+@app.route('/playlists')
+def playlists():
+    if 'token' in session and checkTokenStatus(session)=='Success':
         nr = CreatePlaylist()
         tracks = nr.process(session['token'])
-        return render_template('home.html',token=session['token'])
+        return render_template('playlists.html', grouped_tracks=tracks, token=session['token'], u_id=session['user_id'])
     else:
         return render_template('index.html')
 
@@ -26,6 +30,8 @@ def index():
 def login():
     state = generateRandomString(16)
     session['state_key'] = state
+    redirect_uri = 'http://127.0.0.1:5000/callback'
+    scope = 'user-read-private user-library-read playlist-read-private playlist-modify-public playlist-modify-private'
 
     authorize_url = "https://accounts.spotify.com/authorize?"
     params = {'response_type': 'code', 'redirect_uri': redirect_uri, 'scope': scope, 'client_id': spotify_user_id, 'state': state}
@@ -50,13 +56,16 @@ def callback():
             session['refresh_token'] = payload[1]
             session['token_expiration'] = time.time() + payload[2]
         else:
-            return render_template('error.html', error='Failed to access token')
-    print(session)
-    # current_user = getUserInformation(session)
-    # session['user_id'] = current_user['id']
-    # logging.info('new user: '+ session['user_id'])
+            return render_template('index.html', error='Failed to access token')
+    current_user = getUserInformation(session)
+    session['user_id'] = current_user['id']
 
     return redirect(url_for('index'))
+
+@app.route('/refresh', methods=['GET'])
+def refresh():
+    refreshToken(session['refresh_token'])
+    return 'success'
 
 @app.route('/logout')
 def logout():
