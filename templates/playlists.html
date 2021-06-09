@@ -1,6 +1,8 @@
 {% extends "main_layout.html" %}
 {% block content %}
 
+<!-- todo: button change, styling -->
+
 <!-- start here -->
     <div class="container">
         <section id="playlists">
@@ -42,6 +44,17 @@
         get_playlists(app.auth) //get existing playlist, later it'll be used to check if a playlist already exist
     })()
     
+    //refresh access token
+    function refresh_token(){
+        axios.get('/refresh')
+        .then((res)=>{
+            console.log('new token received')
+        })
+        .catch((error)=>{
+            console.error(error)
+        })
+    }
+
     //to get playlist lists as page load (executed in function())
     function get_playlists(auth){
         return axios.get('https://api.spotify.com/v1/me/playlists', //my playlists endpoint
@@ -150,6 +163,8 @@
     }
 
     function add_playlist(lang, grouped_tracks){ //executed on button click
+        refresh_token()
+
         let playlist = isPlaylistExist(lang) //check if playlist already exists, then return the existing playlist
         let tracks = grouped_tracks.find(x => x.lang == lang).tracks
 

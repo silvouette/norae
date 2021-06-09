@@ -64,7 +64,10 @@ def callback():
 
 @app.route('/refresh', methods=['GET'])
 def refresh():
-    refreshToken(session['refresh_token'])
+    payload = refreshToken(session['refresh_token'])
+    if payload != None:
+            session['token'] = payload[0]
+            session['token_expiration'] = time.time() + payload[1]
     return 'success'
 
 @app.route('/logout')
