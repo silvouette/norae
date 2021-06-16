@@ -1,7 +1,7 @@
 import json
 import requests
 from textblob import TextBlob
-from secrets import musix_key
+from keys import musix_key
 # todo:
 # button to save made playlist
 

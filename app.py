@@ -4,7 +4,7 @@ import time
 from flask import Flask, render_template, make_response, redirect, request, session, url_for
 from helpers import generateRandomString, get_tokens, checkTokenStatus, getUserInformation
 from urllib.parse import urlencode
-from secrets import spotify_user_id, secret_key
+from keys import spotify_user_id, secret_key
 
 app = Flask(__name__)
 app.secret_key = secret_key

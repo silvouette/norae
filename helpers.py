@@ -1,5 +1,5 @@
-import random, string, json, requests, logging, time
-from secrets import id_secret_64
+import random, string, requests, logging, time
+from keys import id_secret_64
 
 def generateRandomString(N):
     return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
