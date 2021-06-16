@@ -41,6 +41,11 @@ li{
 .btn:focus{
     box-shadow: 0 0 2px 3px #afafaf;
 }
+.create{
+    margin-left: 15%;
+    margin-bottom: 7%;
+    width: 70%;
+}
 footer, header{
     background: var(--main-1);  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, var(--main-2), var(--main-1));  /* Chrome 10-25, Safari 5.1-6 */
@@ -95,6 +100,7 @@ footer>a:hover{
 #content{
     display: flex;
     flex-direction: row;
+    overflow-y: hidden;
 }
 
 #saved-tracks{
@@ -134,7 +140,6 @@ footer>a:hover{
     font-weight: 700;
 }
 #tracks-list span{
-    /* color: var(--main-2); */
     color: #8b8b8b;
     display: block;
     margin-bottom: 3%;
@@ -159,9 +164,6 @@ footer>a:hover{
     max-height: 300px;
     overflow:auto;
     margin-left: 2%;
-    /*background: var(--main-1);  /* fallback for old browsers */
-    /*background: -webkit-linear-gradient(to right, var(--main-2), var(--main-1));  /* Chrome 10-25, Safari 5.1-6 */
-    /*background: linear-gradient(to right, var(--main-2), var(--main-1)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 #div-albumart{
@@ -176,15 +178,30 @@ footer>a:hover{
 #playlists{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     margin: 0 auto;
-    background: green;
     width: 80%;
-    
 }
+
 .item-playlist{
-    background:rgb(211, 189, 189);
+    background:#fff;
+    margin: 5px;
     align-items: center;
     width: 30%;
+    min-width: 30%;
+}
+
+.item-title{
+    border: 2px solid var(--main-2);
+    border-radius: 30px 30px 0 0;
+    padding: 10px;
+}
+.item-content{
+    border: 2px solid var(--main-2);
+    border-radius: 0px 0px 30px 30px;
+    padding: 10px;
+    height: 200px;
+    overflow-y: scroll;
 }
 
 .item-playlist li{
@@ -200,7 +217,7 @@ footer>a:hover{
 
 ::-webkit-scrollbar {
     width: 12px;
-    height: 12px;
+    height: 5px;
     }
 
 ::-webkit-scrollbar-thumb {

@@ -8,15 +8,19 @@
         <section id="playlists">
         {% for group in grouped_tracks if group['lang']!='none' %}
             <div class="item-playlist">
-            <h2 class="lang">{{group['lang']}}</h2>
-            <script>
-                var tracks = JSON.parse('{{grouped_tracks|tojson}}')
-            </script>
-            <a class="btn create" href="#" onclick="add_playlist(this.id, tracks); return false;">Create Playlist</a>
-            {% for track in group['tracks'] %}
-                <li>{{track['track']}}</li>            
-                <p>{{', '.join(track['artist'])}}</p>
-            {% endfor %}
+                <div class="item-title">
+                    <h2 class="lang">{{group['lang']}}</h2>
+                    <script>
+                        var tracks = JSON.parse('{{grouped_tracks|tojson}}')
+                    </script>
+                    <a class="btn create" href="#" onclick="add_playlist(this.id, tracks); return false;">Create Playlist</a>
+                </div>
+                <div class="item-content">
+                    {% for track in group['tracks'] %}
+                        <li>{{track['track']}}</li>            
+                        <p>{{', '.join(track['artist'])}}</p>
+                    {% endfor %}
+                </div>
             </div>
         {% endfor %}
         </section>
@@ -160,6 +164,7 @@
         let playlist_button = document.getElementById(button_id)
         playlist_button.textContent = 'Listen Now'
         playlist_button.href = playlist_link
+        playlist_button.target = '_blank'
         playlist_button.removeAttribute("onclick")
     }
 
