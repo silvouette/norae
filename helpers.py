@@ -26,7 +26,7 @@ def get_tokens(code):
 def get_user_information(session):
     payload = make_get_request(session, spotify_get_user_url)
 
-    if payload is not None:
+    if payload is None:
         return None
 
     return payload

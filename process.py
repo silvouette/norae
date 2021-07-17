@@ -1,7 +1,7 @@
 import json
 import requests
+import threading
 from textblob import TextBlob
-from textblob.exceptions import TranslatorError
 from config import musix_match_secret, musix_match_lang_detector_url_format, spotify_get_tracks_url
 
 
@@ -22,6 +22,21 @@ def _collect_songs(spotify_response):
         })
 
     return songs
+
+
+def _collect_languages(clazz, track_data):
+    track_languages = []
+    track_language_jobs = []
+
+    for data in track_data:
+        job = threading.Thread(target=lambda: track_languages.append(clazz.get_lang(data)))
+        job.start()
+        track_language_jobs.append(job)
+
+    for job in track_language_jobs:
+        job.join()
+
+    return track_languages
 
 
 class CreatePlaylist:
@@ -46,18 +61,19 @@ class CreatePlaylist:
         artist = track_data['artist'][0].replace(" ", "%20")
 
         query = musix_match_lang_detector_url_format.format(track, artist, musix_match_secret)
-        response = requests.get(query)
-        res = json.loads(response.text)
+        track_data['lang'] = 'none'
 
-        if response.status_code == 200:
+        try:
+            response = requests.get(query)
+            res = json.loads(response.text)
+
             res_text = res['message']['body']['lyrics']['lyrics_body']  # store lyrics
             lyrics = "\n".join(res_text.split('\n\n')[:2])  # take only first 2 paragraphs of the lyrics
 
-            try:
-                text_blob = TextBlob(lyrics)
-                track_data['lang'] = text_blob.detect_language()
-            except TranslatorError:
-                track_data['lang'] = 'none'
+            text_blob = TextBlob(lyrics)
+            track_data['lang'] = text_blob.detect_language()
+        except Exception:
+            pass
 
         return track_data
 
@@ -65,14 +81,14 @@ class CreatePlaylist:
         # get list of saved tracks
         track_data = self.get_songs(token)
 
-        # get and store language of each tracks
-        track_lang = list(map(self.get_lang, track_data))
+        # collect all track languages
+        track_languages = _collect_languages(self, track_data)
 
         # get unique languages from list for grouping purpose later
-        unique_lang = list(dict.fromkeys(val['lang'] for val in track_lang))
+        unique_lang = list(dict.fromkeys(val['lang'] for val in track_languages))
 
         # group tracks based on lang
         return [{
             'lang': lang,
-            'tracks': [item for item in track_lang if item['lang'] == lang]
+            'tracks': [item for item in track_languages if item['lang'] == lang]
         } for lang in unique_lang]
