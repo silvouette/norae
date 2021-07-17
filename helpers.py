@@ -1,11 +1,11 @@
 import random, string, requests, logging, time
-from keys import id_secret_64
+from config import id_secret_64, app_host
 
 def generateRandomString(N):
     return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
 
 def get_tokens(code):
-    redirect_uri = 'http://127.0.0.1:5000/callback'
+    redirect_uri = 'http://{}/callback'.format(app_host)
     scope = 'user-read-private user-library-read playlist-modify-public'
     authorization = 'Basic {}'.format(id_secret_64)
     token_url = 'https://accounts.spotify.com/api/token'
