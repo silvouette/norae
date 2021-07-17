@@ -1,6 +1,7 @@
 import json
 import requests
 from textblob import TextBlob
+from textblob.exceptions import TranslatorError
 from config import musix_match_secret
 # todo:
 # button to save made playlist
@@ -20,7 +21,7 @@ class CreatePlaylist:
             }
         )
         response_json = response.json()
-        #store track's id, uri, name, and array of artists  
+        #store track's id, uri, name, and array of artists
         res = [{'id':item["track"]["id"],'uri':item["track"]["uri"],'track':item["track"]["name"],'artist':[artist["name"] for artist in item["track"]["artists"]]} for item in response_json["items"]]
 
         return res
@@ -32,18 +33,17 @@ class CreatePlaylist:
         query = "https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?format=json&callback=callback&q_track={}&q_artist={}&apikey={}".format(track, artist, musix_match_secret)
         response = requests.get(query)
         res = json.loads(response.text)
-        if res['message']['header']['status_code'] == 200:
+
+        if response.status_code == 200:
             res_text = res['message']['body']['lyrics']['lyrics_body'] #store lyrics
             lyrics = "\n".join(res_text.split('\n\n')[:2]) #take only first 2 paragraphs of the lyrics
-        else:
-            lyrics = ""
-        if lyrics:
-            b = TextBlob(lyrics)
-            lang = b.detect_language()
-        else:
-            lang = "none" #fallback value in case track's lyrics isn't in musixmatch db or if the track is instrumental
-        
-        track_data['lang'] = lang
+
+            try:
+                text_blob = TextBlob(lyrics)
+                track_data['lang'] = text_blob.detect_language()
+            except TranslatorError:
+                track_data['lang'] = 'none'
+
         return track_data
 
     def process(self, token):
@@ -56,7 +56,7 @@ class CreatePlaylist:
         #group tracks based on lang
         group = [{'lang':lang,'tracks':[item for item in track_lang if item['lang']==lang]} for lang in unique_lang]
         return group
-        
+
 # if __name__ == '__main__':
 #     nr = CreatePlaylist()
 #     nr.process(spotify_user_id)
