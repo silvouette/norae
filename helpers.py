@@ -19,8 +19,8 @@ def get_tokens(code):
     if post_response.status_code == 200:
         res_json = post_response.json()
         return res_json['access_token'], res_json['refresh_token'], res_json['expires_in']
-    else:
-        return None
+
+    return None
 
 
 def get_user_information(session):
@@ -71,5 +71,5 @@ def refresh_token(token):
     if post_response.status_code == 200:
         json = post_response.json()
         return json['access_token'], json['expires_in']
-    else:
-        return None
+
+    return None
