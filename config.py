@@ -14,8 +14,9 @@ musix_match_secret = os.getenv("MUSIX_MATCH_SECRET", "")
 id_secret = spotify_user_id + ':' + spotify_secret
 id_secret_64 = str(base64.b64encode(id_secret.encode('utf-8')))[1:].strip('\'')
 
+spotify_get_user_url = 'https://api.spotify.com/v1/me'
 spotify_get_token_url = 'https://accounts.spotify.com/api/token'
-spotiy_get_tracks_url = "https://api.spotify.com/v1/me/tracks?limit=20"
+spotify_get_tracks_url = "https://api.spotify.com/v1/me/tracks?limit=20"
 
 musix_match_lang_detector_url_format = "https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?format=json&callback" \
                                        "=callback&q_track={}&q_artist={}&apikey={}"
