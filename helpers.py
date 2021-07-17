@@ -5,7 +5,7 @@ def generateRandomString(N):
     return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
 
 def get_tokens(code):
-    redirect_uri = 'http://{}/callback'.format(app_host)
+    redirect_uri = '{}/callback'.format(app_host)
     scope = 'user-read-private user-library-read playlist-modify-public'
     authorization = 'Basic {}'.format(id_secret_64)
     token_url = 'https://accounts.spotify.com/api/token'

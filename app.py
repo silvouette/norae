@@ -30,7 +30,7 @@ def playlists():
 def login():
     state = generateRandomString(16)
     session['state_key'] = state
-    redirect_uri = 'http://{}/callback'.format(app_host)
+    redirect_uri = '{}/callback'.format(app_host)
     scope = 'user-read-private user-library-read playlist-read-private playlist-modify-public playlist-modify-private'
 
     authorize_url = "https://accounts.spotify.com/authorize?"
