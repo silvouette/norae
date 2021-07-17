@@ -61,6 +61,7 @@ def callback():
             session['token_expiration'] = time.time() + payload[2]
         else:
             return render_template('index.html', error='Failed to access token')
+
     current_user = get_user_information(session)
     session['user_id'] = current_user['id']
 
