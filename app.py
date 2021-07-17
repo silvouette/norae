@@ -4,7 +4,7 @@ import time
 from flask import Flask, render_template, make_response, redirect, request, session, url_for
 from helpers import generateRandomString, get_tokens, checkTokenStatus, getUserInformation
 from urllib.parse import urlencode
-from keys import spotify_user_id, app_secret_key
+from config import spotify_user_id, app_secret_key, app_host
 
 app = Flask(__name__)
 app.secret_key = app_secret_key
@@ -30,7 +30,7 @@ def playlists():
 def login():
     state = generateRandomString(16)
     session['state_key'] = state
-    redirect_uri = 'http://127.0.0.1:5000/callback'
+    redirect_uri = 'http://{}/callback'.format(app_host)
     scope = 'user-read-private user-library-read playlist-read-private playlist-modify-public playlist-modify-private'
 
     authorize_url = "https://accounts.spotify.com/authorize?"
