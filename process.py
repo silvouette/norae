@@ -1,7 +1,7 @@
 import json
 import requests
 from textblob import TextBlob
-from keys import musix_key
+from keys import musix_match_secret
 # todo:
 # button to save made playlist
 
@@ -29,7 +29,7 @@ class CreatePlaylist:
         track = track_data['track'].replace(" ","%20")
         artist = track_data['artist'][0].replace(" ","%20")
 
-        query = "https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?format=json&callback=callback&q_track={}&q_artist={}&apikey={}".format(track,artist,musix_key)
+        query = "https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?format=json&callback=callback&q_track={}&q_artist={}&apikey={}".format(track, artist, musix_match_secret)
         response = requests.get(query)
         res = json.loads(response.text)
         if res['message']['header']['status_code'] == 200:
