@@ -1,28 +1,23 @@
-import random, string, requests, logging, time
-from config import id_secret_64, app_host
+import random, string, requests, time
+from config import id_secret_64, app_callback_url, spotify_get_token_url
 
 def generateRandomString(N):
     return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
 
 def get_tokens(code):
-    redirect_uri = '{}/callback'.format(app_host)
-    scope = 'user-read-private user-library-read playlist-modify-public'
     authorization = 'Basic {}'.format(id_secret_64)
-    token_url = 'https://accounts.spotify.com/api/token'
-    
+
     headers = {
-        'Authorization':authorization, 'Accept':'application/json', 
+        'Authorization':authorization, 'Accept':'application/json',
         'Content-Type':'application/x-www-form-urlencoded'
     }
-    body = {'code':code, 'redirect_uri':redirect_uri, 'grant_type': 'authorization_code'}
-    post_response = requests.post(token_url, headers=headers, data=body)
+    body = {'code':code, 'redirect_uri': app_callback_url, 'grant_type': 'authorization_code'}
+    post_response = requests.post(spotify_get_token_url, headers=headers, data=body)
 
     if post_response.status_code == 200:
         res_json = post_response.json()
-        print(res_json)
         return res_json['access_token'], res_json['refresh_token'], res_json['expires_in']
     else:
-        logging.error('getToken:' + str(post_response.status_code))
         return None
 
 def getUserInformation(session):
@@ -31,7 +26,7 @@ def getUserInformation(session):
 
     if payload==None:
         return None
-    
+
     return payload
 
 def makeGetRequest(session,url,params={}):
@@ -49,23 +44,23 @@ def makeGetRequest(session,url,params={}):
 def checkTokenStatus(session):
     if time.time() > session['token_expiration']:
         payload = refreshToken(session['refresh_token'])
-    
+
         if payload != None:
             session['token'] = payload[0]
             session['token_expiration'] = time.time() + payload[1]
         else:
             logging.error('checkTokenStatus')
             return None
-            
+
     return 'Success'
 
 def refreshToken(refresh_token):
     token_url = 'https://accounts.spotify.com/api/token'
-    authorization = 'Basic {}'.format(id_secret_64) 
+    authorization = 'Basic {}'.format(id_secret_64)
 
     headers = {
-        'Authorization':authorization, 'Accept':'application/json', 
-        'Content-Type':'application/x-www-form-urlencoded' 
+        'Authorization':authorization, 'Accept':'application/json',
+        'Content-Type':'application/x-www-form-urlencoded'
     }
     body = {'refresh_token':refresh_token, 'grant-type':'refresh_token'}
     post_response = requests.post(token_url, headers=headers, data=body)
